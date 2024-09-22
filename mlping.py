@@ -68,9 +68,9 @@ def html_template(title, description, image_url, link):
     """
     return template
 
-sender_email = "REDACTED"
-password = "***REMOVED***"
-receiver_email = 'REDACTED'
+sender_email = "____@gmail.com"
+password = "the pass"
+receiver_email = '_____@gmail.com'
 subject = "Here's Today's Highlight!"
 
 sites = [

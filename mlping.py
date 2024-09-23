@@ -71,7 +71,7 @@ def html_template(title, description, image_url, link):
     return template
 
 sender_email = os.getenv('SENDER_MAIL')
-password = os.getenv('SENDER_PASSWORD')
+password = os.getenv('EMAIL_PASSWORD')
 receiver_email = os.getenv('RECEIVER_MAIL')
 
 print(f"SENDER_EMAIL: {sender_email}")

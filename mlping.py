@@ -5,6 +5,7 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
+import time
 
 def send_mail(subject, msg):
     try:
@@ -109,6 +110,8 @@ elif url == 'https://distill.pub/':
             formatted_link = (f"https://distill.pub/{the_atc_link['href']}")
         else:
             print("No Articles found, try again!")
+
+time.sleep(3)
 
 title, description, image_url = scrape_metadata(formatted_link)
 

@@ -17,7 +17,7 @@ def send_mail(subject, msg):
         print("Email sent successfully!")
 
     except Exception as e:
-        print(f"Error while sending mail {e}")
+        print(f"Error while sending mail: {e}")
                 
     finally:
         server.quit()
@@ -44,10 +44,8 @@ def scrape_metadata(url):
         
     except Exception as e:
         print(f"Error while scraping data: {e}")
-
-    else:
-        print(f"Failed to retrieve metadata from {url}")
-        return None, None, None
+    
+    return None, None, None
 
 def html_template(title, description, image_url, link):
     template = f"""
@@ -74,10 +72,6 @@ sender_email = os.getenv('SENDER_MAIL')
 password = os.getenv('EMAIL_PASSWORD')
 receiver_email = os.getenv('RECEIVER_MAIL')
 
-print(f"SENDER_EMAIL: {sender_email}")
-print(f"EMAIL_PASSWORD: {password}")
-print(f"RECEIVER_EMAIL: {receiver_email}")
-
 if not sender_email or not password or not receiver_email:
     print("Error: One or more environment variables are missing.")
     exit(1)
@@ -96,6 +90,7 @@ headers = {
 }
 response = requests.get(url, headers=headers)
 
+formatted_link = None  # Initialize formatted_link to None
 
 if url == 'https://machinelearningmastery.com/blog/':    
     soup = BeautifulSoup(response.content, 'html.parser')
@@ -104,35 +99,40 @@ if url == 'https://machinelearningmastery.com/blog/':
     if h2_tags:
         the_atc = random.choice(h2_tags)
         the_atc_link = the_atc.find('a', href=True)
-        formatted_link = the_atc_link['href']
+        formatted_link = the_atc_link['href'] if the_atc_link else None
     else:
         print("Unable to find Articles. Sorry!, try again")
 
 elif url == 'https://distill.pub/':
-        soup = BeautifulSoup(response.content, 'html.parser')
+    soup = BeautifulSoup(response.content, 'html.parser')
 
-        articles_distill = soup.find_all('div', class_='post-preview')
-        if articles_distill:
-            the_atc = random.choice(articles_distill)
-            the_atc_link = the_atc.find('a', recursive=False)
-            the_atc_title = the_atc.find('h2', class_='title')
-            formatted_link = (f"https://distill.pub/{the_atc_link['href']}")
+    articles_distill = soup.find_all('div', class_='post-preview')
+    if articles_distill:
+        the_atc = random.choice(articles_distill)
+        the_atc_link = the_atc.find('a', recursive=False)
+        if the_atc_link:
+            formatted_link = f"https://distill.pub/{the_atc_link['href']}"
         else:
-            print("No Articles found, try again!")
+            formatted_link = None
+    else:
+        print("No Articles found, try again!")
 
-time.sleep(3)
+# Check if formatted_link is found before proceeding
+if formatted_link:
+    title, description, image_url = scrape_metadata(formatted_link)
 
-title, description, image_url = scrape_metadata(formatted_link)
+    if title:
+        body = html_template(title, description, image_url, formatted_link)
 
+        msg = MIMEMultipart()
+        msg['From'] = sender_email
+        msg['To'] = receiver_email
+        msg['Subject'] = subject
 
-if title:
-    body = html_template(title, description, image_url, formatted_link)
+        msg.attach(MIMEText(body, 'html'))
 
-    msg = MIMEMultipart()
-    msg['From'] = sender_email
-    msg['To'] = receiver_email
-    msg['Subject'] = subject
-
-    msg.attach(MIMEText(body, 'html'))
-
-    send_mail(subject, msg)
+        send_mail(subject, msg)
+    else:
+        print("Failed to retrieve metadata for the article.")
+else:
+    print("No valid article link found.")

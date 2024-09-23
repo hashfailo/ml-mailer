@@ -73,6 +73,15 @@ def html_template(title, description, image_url, link):
 sender_email = os.getenv('SENDER_MAIL')
 password = os.getenv('SENDER_PASSWORD')
 receiver_email = os.getenv('RECEIVER_MAIL')
+
+print(f"SENDER_EMAIL: {sender_email}")
+print(f"EMAIL_PASSWORD: {password}")
+print(f"RECEIVER_EMAIL: {receiver_email}")
+
+if not sender_email or not password or not receiver_email:
+    print("Error: One or more environment variables are missing.")
+    exit(1)
+
 subject = "Here's Today's Highlight!"
 
 sites = [

@@ -68,9 +68,9 @@ def html_template(title, description, image_url, link):
     """
     return template
 
-sender_email = os.getenv('SENDER_MAIL')
-password = os.getenv('EMAIL_PASSWORD')
-receiver_email = os.getenv('RECEIVER_MAIL')
+sender_email = "REDACTED"
+password = "***REMOVED***"
+receiver_email = 'REDACTED'
 
 if not sender_email or not password or not receiver_email:
     print("Error: One or more environment variables are missing.")
@@ -89,6 +89,8 @@ headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
 }
 response = requests.get(url, headers=headers)
+print(f"HTTP Status Code: {response.status_code}")
+print(f"Response content: {response.text[:500]}")  # print first 500 characters for debugging
 
 formatted_link = None  # Initialize formatted_link to None
 

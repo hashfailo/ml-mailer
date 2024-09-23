@@ -4,6 +4,7 @@ import random
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
+import os
 
 def send_mail(subject, msg):
     try:
@@ -15,7 +16,7 @@ def send_mail(subject, msg):
         print("Email sent successfully!")
 
     except Exception as e:
-        print(f"Error {e}")
+        print(f"Error while sending mail {e}")
                 
     finally:
         server.quit()
@@ -41,7 +42,7 @@ def scrape_metadata(url):
             return title_text, description_text, image_url
         
     except Exception as e:
-        print(f"Error: {e}")
+        print(f"Error while scraping data: {e}")
 
     else:
         print(f"Failed to retrieve metadata from {url}")
@@ -68,9 +69,9 @@ def html_template(title, description, image_url, link):
     """
     return template
 
-sender_email = "____@gmail.com"
-password = "the pass"
-receiver_email = '_____@gmail.com'
+sender_email = os.getenv('SENDER_MAIL')
+password = os.getenv('SENDER_PASSWORD')
+receiver_email = os.getenv('RECEIVER_MAIL')
 subject = "Here's Today's Highlight!"
 
 sites = [

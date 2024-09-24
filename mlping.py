@@ -105,8 +105,7 @@ USER_AGENTS = [
 
 retry_strategy = Retry(
     total=3,  
-    status_forcelist=[429, 500, 502, 503, 504, 403], 
-    method_whitelist=["HEAD", "GET", "OPTIONS"] 
+    status_forcelist=[429, 500, 502, 503, 504, 403] 
 )
 
 adapter = HTTPAdapter(max_retries=retry_strategy)

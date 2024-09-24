@@ -6,6 +6,8 @@ from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 import os
 import time
+from requests.adapters import HTTPAdapter
+from urllib3.util.retry import Retry 
 
 mailed = False
 
@@ -100,6 +102,18 @@ USER_AGENTS = [
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'
 ]
+
+retry_strategy = Retry(
+    total=3,  
+    status_forcelist=[429, 500, 502, 503, 504, 403], 
+    method_whitelist=["HEAD", "GET", "OPTIONS"] 
+)
+
+adapter = HTTPAdapter(max_retries=retry_strategy)
+
+http = requests.Session()
+http.mount("https://", adapter)
+http.mount("http://", adapter)
 
 headers = {
     'User-Agent': random.choice(USER_AGENTS)

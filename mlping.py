@@ -7,6 +7,8 @@ from email.mime.multipart import MIMEMultipart
 import os
 import time
 
+mailed = False
+
 def send_mail(subject, msg):
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
@@ -23,10 +25,17 @@ def send_mail(subject, msg):
         server.quit()
 
 def scrape_metadata(url):
+    USER_AGENTS = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'
+    ]
+
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+        'User-Agent': random.choice(USER_AGENTS)
     }
-    response = requests.get(url, headers=headers)
+
+    response = requests.get(url, headers=headers, timeout=10)
     try:
         if response.status_code == 200:
             soup = BeautifulSoup(response.content, 'html.parser')
@@ -85,10 +94,17 @@ sites = [
 
 url = random.choice(sites)
 
+USER_AGENTS = [
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36',
+    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:89.0) Gecko/20100101 Firefox/89.0'
+]
+
 headers = {
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.3'
+    'User-Agent': random.choice(USER_AGENTS)
 }
-response = requests.get(url, headers=headers)
+
+response = requests.get(url, headers=headers, timeout=10)
 print(f"HTTP Status Code: {response.status_code}")
 print(f"Response content: {response.text[:500]}")  # print first 500 characters for debugging
 

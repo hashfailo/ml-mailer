@@ -1,0 +1,29 @@
+name: Send Daily Mail
+
+on:
+  schedule:
+    - cron: "0 9 * * *" # Runs every day at 9 AM UTC
+  workflow_dispatch: # Allows manual triggering
+
+jobs:
+  send_email:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.x
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run your script
+        env:
+          SENDER_MAIL: ${{ secrets.SENDER_MAIL }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+          RECEIVER_MAIL: ${{ secrets.RECEIVER_MAIL }}
+        run: python mlping.py

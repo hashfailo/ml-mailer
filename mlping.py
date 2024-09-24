@@ -68,9 +68,9 @@ def html_template(title, description, image_url, link):
     """
     return template
 
-sender_email = "REDACTED"
-password = "***REMOVED***"
-receiver_email = 'REDACTED'
+sender_email = os.getenv('SENDER_MAIL')
+password = os.getenv('EMAIL_PASSWORD')
+receiver_email = os.getenv('RECEIVER_MAIL')
 
 if not sender_email or not password or not receiver_email:
     print("Error: One or more environment variables are missing.")
